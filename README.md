@@ -14,8 +14,8 @@ cmake --build build
 ./build/queen play 200
 ```
 
-A run needs a live key-value cluster, and `queen` with no arguments prints its usage. `docker compose run ci` runs the same build and play in a container that brings its own cluster.
+The build needs the key-value store's C client library and SQLite installed on the host, and a run needs a live key-value cluster. `queen` with no arguments prints its usage. `docker compose run ci` runs the same build and play in a container that brings its own cluster.
 
 ## Licence
 
-MIT; see LICENSE.
+LICENSE and CITATION.cff say MIT, but the SPDX headers in `src/` and `test/` say Apache-2.0, so the two disagree until one is changed.
