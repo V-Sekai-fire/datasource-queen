@@ -1,39 +1,21 @@
 # datasource-queen
 
-Durable state. A **data source** implements a repository, and this one is packed by
-what a caller can reach and what it cannot.
+A text-only settlement game whose world is an embedded SQL database paged into a distributed key-value store, so each turn is durable.
 
-| member | what it does | where it runs |
-| --- | --- | --- |
-| `queen` | the game, and the store's caller. A plane: a process with no networking. | here, in `src/` |
-| `taskweft` | the planner plane. The Queen's one decision, as an HTN domain over the ward. | here, in `src/planner.cpp` |
-| `datasource-store` | SQLite over a VFS whose pages live in FoundationDB, on rivet's Depot layout | on its caller's machine |
-| FoundationDB | the pages, and every durable transaction. Below the planes, not one of them. | anywhere |
-| `versitygw` | the S3-compatible endpoint FoundationDB backs up to with `fdbbackup` | with FoundationDB |
+## What it is for
 
-## Run it
+It is the multiplayer fabric's durable-state data source, and the game is the workload that exercises it. Each resident is a database of its own, each cycle is a transaction, and an HTN planner makes the ruler's choices. The store's virtual file system keeps no local database file, so a resident's state can move between machines without a copy. [docs/design.md](docs/design.md) carries the design.
 
-    ./build/queen play  200 20260811 8     play a ward and see what became of it
-    ./build/queen check 200 20260811 8     play it twice and hold it to its arithmetic
+## Build and run
 
-    docker compose run --rm ci             the whole of .github/workflows/ci.yml
-    docker compose run --rm shell          same container, cluster up, at a prompt
+```sh
+cmake -B build
+cmake --build build
+./build/queen play 200
+```
 
-## State
+A run needs a live key-value cluster, and `queen` with no arguments prints its usage. `docker compose run ci` runs the same build and play in a container that brings its own cluster.
 
-**The game builds and plays.** CI plays two wards on two seeds against a live FoundationDB and
-holds them to their arithmetic, so the domain has a workload that runs on every push.
+## Licence
 
-**Not deployed.** There is no Fly machine definition yet for FoundationDB and versitygw, and
-that is the only part of this with a machine of its own, since the plane ships with whatever
-calls it. `datasource-store#17` tracks it.
-
-## The design
-
-`docs/design.md` holds the rest, unchanged: what needs a ring and what does not, why the store
-holds no local file, what this is not, the `queen` tenant and why a game is the right one, and
-how to run CI here. `rfd/0085` is the setting and `rfd/0112` the planner decision.
-
-This README and `interactor-ward`'s carried the same 114 lines. That copy is gone from
-`interactor-ward`, which is a clone that has not been written yet, and this is the one place
-those sections live.
+MIT; see LICENSE.
