@@ -181,27 +181,58 @@ Tasks m_earn_first(std::shared_ptr<TwState>, std::vector<TwValue>) {
 	return std::vector<TwTask>{call("make_the_ward_earn")};
 }
 
-const TwDomain &ward_domain() {
-	// Built once. It holds no state — every fact the planner uses arrives in the TwState — so
-	// one copy is right and rebuilding it each cycle would only cost.
-	static const TwDomain domain = [] {
-		TwDomain d;
-		d.actions["commission"] = act_commission;
-		d.actions["hold"] = act_hold;
+unsigned long long g_order_seed = 0;
+int g_order_all = 0;
 
-		// Method order is decision order: the planner tries them in the order they are pushed
-		// and backtracks, so each list below is the argument about what matters most. Each task
-		// ends either in a commission, in holding for what it still wants, or in handing on to
-		// the task that matters next — and never in falling through while it still wants
-		// something, which is what kept turning the plan back into a sort by price.
-		d.task_methods["run_the_ward"] = {m_repair_first, m_earn_first};
-		d.task_methods["make_the_ward_earn"] = {m_rails, m_plaza, m_save_to_earn,
-		                                        m_then_the_sparks};
-		d.task_methods["keep_the_sparks_working"] = {m_den, m_tavern, m_chapel, m_save_for_sparks,
-		                                             m_then_the_word};
-		d.task_methods["let_word_get_out"] = {m_row, m_wait};
-		return d;
-	}();
+// Fisher-Yates over [lo, hi) with a splitmix64 stream, so a seed names one order.
+void shuffle(std::vector<TwMethodFn> &m, size_t lo, size_t hi, unsigned long long &x) {
+	for (size_t i = hi - 1; i > lo; i--) {
+		x += 0x9e3779b97f4a7c15ULL;
+		unsigned long long z = x;
+		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;
+		z = (z ^ (z >> 27)) * 0x94d049bb133111ebULL;
+		z ^= z >> 31;
+		const size_t j = lo + static_cast<size_t>(z % (i - lo + 1));
+		std::swap(m[i], m[j]);
+	}
+}
+
+TwDomain build_domain() {
+	TwDomain d;
+	d.actions["commission"] = act_commission;
+	d.actions["hold"] = act_hold;
+	std::vector<TwMethodFn> run = {m_repair_first, m_earn_first};
+	std::vector<TwMethodFn> earn = {m_rails, m_plaza, m_save_to_earn, m_then_the_sparks};
+	std::vector<TwMethodFn> sparks = {m_den, m_tavern, m_chapel, m_save_for_sparks, m_then_the_word};
+	std::vector<TwMethodFn> word = {m_row, m_wait};
+	if (g_order_seed) {
+		unsigned long long x = g_order_seed;
+		if (g_order_all) {
+			shuffle(run, 0, run.size(), x);
+			shuffle(earn, 0, earn.size(), x);
+			shuffle(sparks, 0, sparks.size(), x);
+			shuffle(word, 0, word.size(), x);
+		} else {
+			shuffle(earn, 0, 2, x);
+			shuffle(sparks, 0, 3, x);
+		}
+	}
+	d.task_methods["run_the_ward"] = run;
+	d.task_methods["make_the_ward_earn"] = earn;
+	d.task_methods["keep_the_sparks_working"] = sparks;
+	d.task_methods["let_word_get_out"] = word;
+	return d;
+}
+
+const TwDomain &ward_domain() {
+	static TwDomain domain = build_domain();
+	static unsigned long long built_for = 0;
+	static int built_all = 0;
+	if (built_for != g_order_seed || built_all != g_order_all) {
+		domain = build_domain();
+		built_for = g_order_seed;
+		built_all = g_order_all;
+	}
 	return domain;
 }
 
@@ -239,6 +270,11 @@ std::shared_ptr<TwState> state_of(const ward_view_t &v) {
 // machine that would quietly play a different game, which is the one failure this whole
 // repository is arranged to catch. So the budget is ours to inspect, and a budget that fired
 // is a refusal.
+void queen_plan_order(unsigned long long seed, int all) {
+	g_order_seed = seed;
+	g_order_all = all;
+}
+
 int queen_plan(const ward_view_t *view, int *venue) {
 	if (!view || !venue) return 1;
 	*venue = -1;

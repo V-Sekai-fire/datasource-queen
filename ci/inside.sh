@@ -75,6 +75,15 @@ echo "$out" | grep -q "arrived" || {
   echo "the Broadcast Row brought nobody, so it is still five hundred scrip for nothing"
   exit 1; }
 
+# The written method order is order seed 0, and a shuffled order of every method is another game.
+step "The written order is order seed 0, and a shuffled order is another game"
+a=$(/build/queen check 200 20260811 8 | grep -o 'fingerprint [0-9a-f]*')
+b=$(/build/queen check 200 20260811 8 0 | grep -o 'fingerprint [0-9a-f]*')
+c=$(/build/queen check 200 20260811 8 1 all | grep -o 'fingerprint [0-9a-f]*')
+echo "written $a, seed 0 $b, seed 1 all $c"
+[ "$a" = "$b" ] || { echo "order seed 0 is not the written order"; exit 1; }
+[ "$a" != "$c" ] || { echo "a shuffled order played the same ward"; exit 1; }
+
 # A game too large for one zone. A ward holds 1384 Sparks, so 1500 is two wards, and the run
 # moves one Spark between them halfway through. The sum has to hold across both wards, which
 # is the part a migration is able to break. A Spark is a database, so this founds fifteen
