@@ -37,6 +37,11 @@ typedef struct {
 // game stops replaying and nobody notices.
 int queen_plan(const ward_view_t *view, int *venue);
 
+// Experiment: the order the methods of each task are tried in, fixed for a whole game. Seed 0
+// is the order written in planner.cpp. With `all` 0 only the commissioning methods of a task
+// are shuffled among themselves; with `all` 1 every method of every task is.
+void queen_plan_order(unsigned long long seed, int all);
+
 #ifdef __cplusplus
 }
 #endif

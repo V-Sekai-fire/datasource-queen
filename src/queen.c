@@ -694,6 +694,7 @@ int cycle(gyre_t *g) {
 		         "INSERT INTO ledger(cycle, what, amount, spark) VALUES (%d,'debt',%d,-1)",
 		         g->cycle, -paid);
 		if (run(g->ward, sql)) goto give_up;
+		if (g->debt == 0) printf("  cycle %d: the Debt Clock is paid off\n", g->cycle);
 	}
 
 	// Word gets out, and Sparks arrive. The Broadcast Row cost five hundred scrip and until now
@@ -1170,7 +1171,7 @@ static int serve(int port, int nsparks, uint64_t seed) {
 
 int main(int argc, char **argv) {
 	if (argc < 3) {
-		fprintf(stderr, "usage: queen play|check|shard <cycles> [seed] [sparks]\n"
+		fprintf(stderr, "usage: queen play|check|shard <cycles> [seed] [sparks] [order-seed [all]]\n"
 		                "       queen serve <port> [seed] [sparks]\n");
 		return 2;
 	}
@@ -1178,6 +1179,7 @@ int main(int argc, char **argv) {
 	const int cycles = atoi(argv[2]);
 	const uint64_t seed = (argc > 3) ? strtoull(argv[3], NULL, 10) : 20260811;
 	const int nsparks = (argc > 4) ? atoi(argv[4]) : 8;
+	if (argc > 5) queen_plan_order(strtoull(argv[5], NULL, 10), argc > 6 && strcmp(argv[6], "all") == 0);
 
 	// One ward is one zone. Past that the answer is a second ward on its own machine, joined
 	// underneath by FoundationDB: the pages are already shared, so a Spark moves between wards
