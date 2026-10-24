@@ -1,7 +1,7 @@
 # The store design
 
 Moved out of `README.md`, which is capped at 40 lines. The text is unchanged, so it
-still uses the vocabulary RFD 0111 retires — plane, edge plane, and domain. Converting
+still uses the vocabulary RFD66606-0111 retires — plane, edge plane, and domain. Converting
 it is a separate pass, because a rename inside an argument can change what it argues.
 
 ## What needs a ring, and what does not

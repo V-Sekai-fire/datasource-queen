@@ -1,6 +1,6 @@
 // The interface tests, in a real browser.
 //
-// RFD 0112 chose Lexical for how a parameter behaves under the caret, and that behaviour exists
+// RFD66606-0112 chose Lexical for how a parameter behaves under the caret, and that behaviour exists
 // only in a browser: a `contenteditable` element's selection model is the browser's, not the
 // library's. So these run in Chromium against the built bundle, and there is no jsdom shortcut —
 // jsdom has no caret and would agree with any implementation at all.

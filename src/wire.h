@@ -23,7 +23,7 @@
 // model with no conversion and no second opinion about scale.
 #define UM(m) ((int64_t)(m) * 1000000)
 
-// The Commons is the upper deck and the Under-Market is thirty metres below it. RFD 0085 puts
+// The Commons is the upper deck and the Under-Market is thirty metres below it. RFD66606-0085 puts
 // three venues in each.
 #define COMMONS_UM UM(0)
 #define UNDER_UM UM(-30)

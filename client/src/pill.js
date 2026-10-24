@@ -1,6 +1,6 @@
 // The parameter block.
 //
-// This node is the reason RFD 0112 chose Lexical. A parameter has to be one thing to the caret:
+// This node is the reason RFD66606-0112 chose Lexical. A parameter has to be one thing to the caret:
 // the player crosses it in one key press, cannot edit it in place, and removes it whole. A
 // `DecoratorNode` is that by construction, because Lexical treats what the decorator draws as
 // opaque and never puts a selection inside it.

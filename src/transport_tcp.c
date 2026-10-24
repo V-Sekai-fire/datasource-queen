@@ -40,7 +40,7 @@ static int listen_on(int port) {
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof on);
 	// One socket for both families. Fly gives an app an IPv6 address and may give it no IPv4 at
 	// all, and a v6-only listener that a v4 client cannot reach is the failure that looks like a
-	// firewall. RFD 0112 records the other half of this: Chromium's resolver can fail where curl
+	// firewall. RFD66606-0112 records the other half of this: Chromium's resolver can fail where curl
 	// succeeds on a v6-only app, so a test navigates to the bracketed literal.
 	setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, &off, sizeof off);
 

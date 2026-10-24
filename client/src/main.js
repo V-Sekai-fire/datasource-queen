@@ -1,7 +1,7 @@
 // The slash command interface.
 //
 // A field the player types into, a menu that opens on `/`, and parameters that behave as one
-// thing to the caret. RFD 0112 chose Lexical for that last clause and nothing else: an `<input>`
+// thing to the caret. RFD66606-0112 chose Lexical for that last clause and nothing else: an `<input>`
 // holds plain text, and a `contenteditable` written by hand fails on the caret, on mobile
 // autocorrect, on IME composition and on paste — in the input path of every command.
 //
