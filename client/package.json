@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The slash command interface for a Queen of the Gyre. RFD 0112.",
+  "description": "The slash command interface for a Queen of the Gyre. RFD66606-0112.",
   "scripts": {
     "build": "esbuild src/main.js --bundle --format=esm --outfile=public/bundle.js",
     "serve": "esbuild src/main.js --bundle --format=esm --outfile=public/bundle.js --servedir=public",

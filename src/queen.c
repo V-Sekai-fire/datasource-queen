@@ -14,7 +14,7 @@
 // critical path to draw, which is the one game shape genuinely better as a database than as
 // an engine.
 //
-// The setting is RFD 0085's, so none of it is borrowed. Sparks are digitised people in
+// The setting is RFD66606-0085's, so none of it is borrowed. Sparks are digitised people in
 // rented Frames on a failing ring-station; the Under-Market and the Commons are where they
 // gather; the Debt Clock is what an automated creditor is owed. The antagonist is not a dark
 // lord. It is entropy and compound interest, which is harder to stab.
@@ -117,7 +117,7 @@ int weft_txn_abort(unsigned long long txnid);
 
 // ── The ward ──────────────────────────────────────────────────────────────────
 //
-// Six venues, three in the Commons and three in the Under-Market, taken from RFD 0085's
+// Six venues, three in the Commons and three in the Under-Market, taken from RFD66606-0085's
 // map. Each changes how the Sparks behave rather than granting a number: a tavern makes
 // them bolder because they rest, a chapel makes failure survivable, the Rails put more work
 // on the board. The Queen's whole game is choosing what to build and in what order.
@@ -150,7 +150,7 @@ static const place_t VENUE_PLACES[NVENUES] = {
     {UM(20), UNDER_UM, UM(-10)},   // Broadcast Row
 };
 
-// Contracts, from RFD 0085's catalogue. Combat is one of the nine and it is avoidable,
+// Contracts, from RFD66606-0085's catalogue. Combat is one of the nine and it is avoidable,
 // because that setting says exploration carries a session and the fighting is the minority.
 // A ward that only ever fought would be a different game and a worse fit for the fiction.
 static const char *KINDS[] = {"scavenge", "hack",     "repair", "delivery", "survey",
@@ -287,7 +287,7 @@ int found_ward(gyre_t *g, const char *prefix, int nsparks, uint64_t seed, int ba
 		if (run(g->ward, sql)) return 1;
 	}
 
-	// The ward opens owing more than it holds, which is the situation RFD 0085 describes and
+	// The ward opens owing more than it holds, which is the situation RFD66606-0085 describes and
 	// the reason anybody works here.
 	g->treasury = 300;
 	g->debt = 4000;
